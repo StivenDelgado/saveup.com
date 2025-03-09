@@ -44,8 +44,8 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Smart Savings", href: "/savings", icon: Wallet },
-    { name: "Savings Goals", href: "/goals", icon: Target },
+    { name: "Smart Savings", href: "/smart-savings", icon: Wallet },
+    { name: "Savings Goals", href: "/savings-goals", icon: Target },
     { name: "AI Advisor", href: "/chatbot", icon: MessageSquare },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
     { name: "Profile", href: "/profile", icon: User },

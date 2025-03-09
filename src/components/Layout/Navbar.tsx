@@ -40,11 +40,14 @@ const Navbar = ({ onMenuClick, onNotificationsClick }: NavbarProps) => {
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               Dashboard
             </Link>
-            <Link to="/savings" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/smart-savings" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               Smart Savings
             </Link>
-            <Link to="/goals" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/savings-goals" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               Goals
+            </Link>
+            <Link to="/analytics" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Analytics
             </Link>
             <Link to="/chatbot" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               AI Advisor
@@ -75,17 +78,17 @@ const Navbar = ({ onMenuClick, onNotificationsClick }: NavbarProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/profile" className="cursor-pointer w-full">Profile</Link>
+                <Link to="/profile" className="cursor-pointer w-full">Perfil</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/settings" className="cursor-pointer w-full">Settings</Link>
+                <Link to="/settings" className="cursor-pointer w-full">Configuración</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/logout" className="cursor-pointer w-full">Logout</Link>
+                <Link to="/logout" className="cursor-pointer w-full">Cerrar Sesión</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
