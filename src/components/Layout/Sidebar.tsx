@@ -43,13 +43,13 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
   }, [location.pathname, isMobile]);
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Smart Savings", href: "/smart-savings", icon: Wallet },
-    { name: "Savings Goals", href: "/savings-goals", icon: Target },
-    { name: "AI Advisor", href: "/chatbot", icon: MessageSquare },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
-    { name: "Profile", href: "/profile", icon: User },
-    { name: "Settings", href: "/settings", icon: Settings },
+    { name: "Panel", href: "/dashboard", icon: Home },
+    { name: "Ahorro Inteligente", href: "/smart-savings", icon: Wallet },
+    { name: "Metas de Ahorro", href: "/savings-goals", icon: Target },
+    { name: "Asesor IA", href: "/chatbot", icon: MessageSquare },
+    { name: "Analítica", href: "/analytics", icon: BarChart3 },
+    { name: "Perfil", href: "/profile", icon: User },
+    { name: "Configuración", href: "/settings", icon: Settings },
   ];
 
   const sidebarClasses = isMobile
@@ -72,7 +72,7 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
       <div className={sidebarContentClasses}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/50">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-xl font-semibold text-moneywise-600">MoneyWise</span>
+            <span className="text-xl font-semibold text-moneywise-600">SaveUp</span>
           </Link>
           
           {isMobile && (
@@ -82,7 +82,7 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
               onClick={() => setOpen(false)}
             >
               <X className="h-5 w-5" />
-              <span className="sr-only">Close sidebar</span>
+              <span className="sr-only">Cerrar menú</span>
             </Button>
           )}
         </div>
@@ -119,7 +119,7 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
           >
             <Link to="/logout">
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              Cerrar sesión
             </Link>
           </Button>
         </div>

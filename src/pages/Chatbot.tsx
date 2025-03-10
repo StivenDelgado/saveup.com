@@ -18,7 +18,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your AI financial advisor. How can I help you today?",
+      content: "¡Hola! Soy tu asesor financiero con IA. ¿En qué puedo ayudarte hoy?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -52,11 +52,11 @@ const Chatbot = () => {
     // Simulate AI response
     setTimeout(() => {
       const botResponses = [
-        "Based on your spending habits, I recommend saving an additional 5% of your income each month.",
-        "Looking at your financial goals, you're on track to reach your emergency fund target by next quarter.",
-        "I've analyzed your budget and found that you could reduce your subscription services to save about $50 monthly.",
-        "Your savings rate is impressive! You're saving more than 70% of people in your age group.",
-        "Have you considered setting up automatic transfers to your savings account? It's a great way to build wealth consistently.",
+        "Basado en tus hábitos de gasto, recomiendo ahorrar un 5% adicional de tus ingresos cada mes.",
+        "Viendo tus metas financieras, estás en camino de alcanzar tu fondo de emergencia para el próximo trimestre.",
+        "He analizado tu presupuesto y descubrí que podrías reducir tus servicios de suscripción para ahorrar unos $50 mensuales.",
+        "¡Tu tasa de ahorro es impresionante! Estás ahorrando más que el 70% de las personas en tu grupo de edad.",
+        "¿Has considerado configurar transferencias automáticas a tu cuenta de ahorros? Es una excelente manera de acumular riqueza de forma constante.",
       ];
       
       const botMessage: Message = {
@@ -79,11 +79,11 @@ const Chatbot = () => {
   };
 
   const suggestedQuestions = [
-    "How can I save more money?",
-    "What's a good savings rate?",
-    "How do I create an emergency fund?",
-    "Should I pay off debt or save first?",
-    "How to start investing with little money?",
+    "¿Cómo puedo ahorrar más dinero?",
+    "¿Cuál es una buena tasa de ahorro?",
+    "¿Cómo crear un fondo de emergencia?",
+    "¿Debería pagar deudas o ahorrar primero?",
+    "¿Cómo empezar a invertir con poco dinero?",
   ];
 
   return (
@@ -91,8 +91,8 @@ const Chatbot = () => {
       <div className="flex flex-col h-[calc(100vh-12rem)] max-h-[calc(100vh-12rem)]">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">AI Financial Advisor</h1>
-            <p className="text-muted-foreground">Ask questions about your finances and get personalized advice</p>
+            <h1 className="text-3xl font-bold tracking-tight">Asesor Financiero IA</h1>
+            <p className="text-muted-foreground">Haz preguntas sobre tus finanzas y obtén consejos personalizados</p>
           </div>
         </div>
 
@@ -101,7 +101,7 @@ const Chatbot = () => {
             <div className="flex items-center justify-between border-b px-6 py-3">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-moneywise-600" />
-                <span className="font-medium">MoneyWise Assistant</span>
+                <span className="font-medium">Asistente SaveUp</span>
               </div>
             </div>
             
@@ -180,15 +180,15 @@ const Chatbot = () => {
                   variant="outline"
                   size="icon"
                   className="h-10 w-10 shrink-0 rounded-full"
-                  onClick={() => toast.info("File upload is not implemented yet.")}
+                  onClick={() => toast.info("La subida de archivos aún no está implementada.")}
                 >
                   <Paperclip className="h-5 w-5" />
-                  <span className="sr-only">Attach file</span>
+                  <span className="sr-only">Adjuntar archivo</span>
                 </Button>
                 <div className="relative flex-1">
                   <Input
                     className="resize-none pr-12"
-                    placeholder="Ask a question..."
+                    placeholder="Haz una pregunta..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -200,7 +200,7 @@ const Chatbot = () => {
                     disabled={!input.trim() || isTyping}
                   >
                     <ArrowUp className="h-4 w-4" />
-                    <span className="sr-only">Send</span>
+                    <span className="sr-only">Enviar</span>
                   </Button>
                 </div>
               </div>

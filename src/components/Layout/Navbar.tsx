@@ -28,29 +28,29 @@ const Navbar = ({ onMenuClick, onNotificationsClick }: NavbarProps) => {
             onClick={onMenuClick}
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">Alternar menú</span>
           </Button>
           <Link to="/" className="hidden md:flex items-center gap-2">
-            <span className="text-xl font-semibold text-moneywise-600">MoneyWise</span>
+            <span className="text-xl font-semibold text-moneywise-600">SaveUp</span>
           </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center gap-4">
             <Link to="/dashboard" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Dashboard
+              Panel
             </Link>
             <Link to="/smart-savings" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Smart Savings
+              Ahorro Inteligente
             </Link>
             <Link to="/savings-goals" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Goals
+              Metas
             </Link>
             <Link to="/analytics" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Analytics
+              Analítica
             </Link>
             <Link to="/chatbot" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              AI Advisor
+              Asesor IA
             </Link>
           </nav>
         </div>
@@ -64,7 +64,7 @@ const Navbar = ({ onMenuClick, onNotificationsClick }: NavbarProps) => {
           >
             <Bell className="h-5 w-5" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-moneywise-500 rounded-full"></span>
-            <span className="sr-only">Notifications</span>
+            <span className="sr-only">Notificaciones</span>
           </Button>
           
           <DropdownMenu>
@@ -74,7 +74,7 @@ const Navbar = ({ onMenuClick, onNotificationsClick }: NavbarProps) => {
                 size="icon"
               >
                 <User className="h-5 w-5" />
-                <span className="sr-only">User menu</span>
+                <span className="sr-only">Menú de usuario</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

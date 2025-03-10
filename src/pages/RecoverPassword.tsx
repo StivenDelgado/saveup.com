@@ -21,24 +21,24 @@ const RecoverPassword = () => {
     setTimeout(() => {
       setLoading(false);
       setSent(true);
-      toast.success("Recovery email sent!");
+      toast.success("¡Correo de recuperación enviado!");
     }, 1500);
   };
 
   return (
     <AuthLayout 
-      title="Recover Password" 
-      subtitle="We'll send you a link to reset your password"
-      backLink={{ label: "Back to login", to: "/login" }}
+      title="Recuperar contraseña" 
+      subtitle="Te enviaremos un enlace para restablecer tu contraseña"
+      backLink={{ label: "Volver al inicio de sesión", to: "/login" }}
     >
       {!sent ? (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Correo electrónico</Label>
             <Input
               id="email"
               type="email"
-              placeholder="email@example.com"
+              placeholder="correo@ejemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -51,14 +51,14 @@ const RecoverPassword = () => {
             className="w-full h-11 bg-moneywise-600 hover:bg-moneywise-700" 
             disabled={loading}
           >
-            {loading ? "Sending..." : "Send recovery email"}
+            {loading ? "Enviando..." : "Enviar correo de recuperación"}
           </Button>
         </form>
       ) : (
         <div className="space-y-4 text-center">
           <div className="bg-moneywise-100 text-moneywise-800 p-4 rounded-lg">
-            <p>Recovery email sent to <strong>{email}</strong></p>
-            <p className="text-sm mt-2">Please check your inbox and follow the instructions.</p>
+            <p>Correo de recuperación enviado a <strong>{email}</strong></p>
+            <p className="text-sm mt-2">Por favor revisa tu bandeja de entrada y sigue las instrucciones.</p>
           </div>
           
           <Button 
@@ -66,7 +66,7 @@ const RecoverPassword = () => {
             className="w-full h-11" 
             onClick={() => navigate("/login")}
           >
-            Return to login
+            Volver al inicio de sesión
           </Button>
         </div>
       )}

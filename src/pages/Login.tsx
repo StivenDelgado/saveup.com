@@ -33,17 +33,17 @@ const Login = () => {
 
   return (
     <AuthLayout 
-      title="Welcome back" 
-      subtitle="Enter your credentials to access your account"
-      backLink={{ label: "Don't have an account? Sign up", to: "/register" }}
+      title="Bienvenido de nuevo" 
+      subtitle="Ingresa tus credenciales para acceder a tu cuenta"
+      backLink={{ label: "¿No tienes una cuenta? Regístrate", to: "/register" }}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Correo electrónico</Label>
           <Input
             id="email"
             type="email"
-            placeholder="email@example.com"
+            placeholder="correo@ejemplo.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -53,12 +53,12 @@ const Login = () => {
         
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Link 
               to="/recover-password" 
               className="text-xs text-muted-foreground hover:text-primary link-underline"
             >
-              Forgot password?
+              ¿Olvidaste tu contraseña?
             </Link>
           </div>
           <Input
@@ -79,7 +79,7 @@ const Login = () => {
             onCheckedChange={(checked) => setRememberMe(checked as boolean)}
           />
           <Label htmlFor="remember-me" className="text-sm text-muted-foreground">
-            Remember me
+            Recordarme
           </Label>
         </div>
         
@@ -88,7 +88,7 @@ const Login = () => {
           className="w-full h-11 bg-moneywise-600 hover:bg-moneywise-700" 
           disabled={loading}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? "Iniciando sesión..." : "Iniciar sesión"}
         </Button>
       </form>
     </AuthLayout>

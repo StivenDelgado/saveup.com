@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -119,7 +119,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Logout component
 const Logout = () => {
   const { logout } = useAuth();
-  const navigate = useNavigate();
+  const { navigate } = useAuth();
   
   useEffect(() => {
     logout();

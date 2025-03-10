@@ -1,6 +1,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: string;
@@ -17,6 +18,7 @@ interface AuthContextType {
   logout: () => void;
   recoverPassword: (email: string) => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  navigate: (to: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is logged in from localStorage
@@ -125,7 +128,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         logout,
         recoverPassword,
-        changePassword
+        changePassword,
+        navigate
       }}
     >
       {children}

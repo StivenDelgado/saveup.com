@@ -18,7 +18,7 @@ const ChangePassword = () => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error("Las nuevas contraseñas no coinciden");
       return;
     }
     
@@ -27,20 +27,20 @@ const ChangePassword = () => {
     // Simulate password change
     setTimeout(() => {
       setLoading(false);
-      toast.success("Password changed successfully");
+      toast.success("Contraseña cambiada con éxito");
       navigate("/dashboard");
     }, 1500);
   };
 
   return (
     <AuthLayout 
-      title="Change Password" 
-      subtitle="Update your password to secure your account"
-      backLink={{ label: "Back to dashboard", to: "/dashboard" }}
+      title="Cambiar contraseña" 
+      subtitle="Actualiza tu contraseña para proteger tu cuenta"
+      backLink={{ label: "Volver al panel", to: "/dashboard" }}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="current-password">Current Password</Label>
+          <Label htmlFor="current-password">Contraseña actual</Label>
           <Input
             id="current-password"
             type="password"
@@ -53,7 +53,7 @@ const ChangePassword = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="new-password">New Password</Label>
+          <Label htmlFor="new-password">Nueva contraseña</Label>
           <Input
             id="new-password"
             type="password"
@@ -66,7 +66,7 @@ const ChangePassword = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm New Password</Label>
+          <Label htmlFor="confirm-password">Confirmar nueva contraseña</Label>
           <Input
             id="confirm-password"
             type="password"
@@ -83,7 +83,7 @@ const ChangePassword = () => {
           className="w-full h-11 bg-moneywise-600 hover:bg-moneywise-700" 
           disabled={loading}
         >
-          {loading ? "Updating..." : "Update Password"}
+          {loading ? "Actualizando..." : "Actualizar contraseña"}
         </Button>
       </form>
     </AuthLayout>

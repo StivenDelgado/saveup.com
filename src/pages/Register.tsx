@@ -21,12 +21,12 @@ const Register = () => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error("Las contraseñas no coinciden");
       return;
     }
     
     if (!acceptTerms) {
-      toast.error("Please accept the terms and conditions");
+      toast.error("Por favor acepta los términos y condiciones");
       return;
     }
     
@@ -35,24 +35,24 @@ const Register = () => {
     // Simulate registration
     setTimeout(() => {
       setLoading(false);
-      toast.success("Registration successful!");
+      toast.success("¡Registro exitoso!");
       navigate("/dashboard");
     }, 1500);
   };
 
   return (
     <AuthLayout 
-      title="Create an account" 
-      subtitle="Join MoneyWise and start saving today"
-      backLink={{ label: "Already have an account? Sign in", to: "/login" }}
+      title="Crear una cuenta" 
+      subtitle="Únete a SaveUp y comienza a ahorrar hoy mismo"
+      backLink={{ label: "¿Ya tienes una cuenta? Inicia sesión", to: "/login" }}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="name">Nombre completo</Label>
           <Input
             id="name"
             type="text"
-            placeholder="John Doe"
+            placeholder="Juan Pérez"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -61,11 +61,11 @@ const Register = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Correo electrónico</Label>
           <Input
             id="email"
             type="email"
-            placeholder="email@example.com"
+            placeholder="correo@ejemplo.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -74,7 +74,7 @@ const Register = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Contraseña</Label>
           <Input
             id="password"
             type="password"
@@ -87,7 +87,7 @@ const Register = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Label htmlFor="confirm-password">Confirmar contraseña</Label>
           <Input
             id="confirm-password"
             type="password"
@@ -107,7 +107,7 @@ const Register = () => {
             required
           />
           <Label htmlFor="accept-terms" className="text-sm text-muted-foreground">
-            I agree to the terms and conditions
+            Acepto los términos y condiciones
           </Label>
         </div>
         
@@ -116,7 +116,7 @@ const Register = () => {
           className="w-full h-11 bg-moneywise-600 hover:bg-moneywise-700" 
           disabled={loading || !acceptTerms}
         >
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? "Creando cuenta..." : "Crear cuenta"}
         </Button>
       </form>
     </AuthLayout>

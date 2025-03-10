@@ -107,7 +107,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h3 className="text-xl font-bold text-moneywise-700 dark:text-moneywise-300">MoneyWise</h3>
+              <h3 className="text-xl font-bold text-moneywise-700 dark:text-moneywise-300">SaveUp</h3>
               <p className="text-gray-600 dark:text-gray-400">Tu compañero de finanzas personales</p>
             </div>
             <div className="flex gap-4">
@@ -120,7 +120,7 @@ const Index = () => {
             </div>
           </div>
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
-            <p>© {new Date().getFullYear()} MoneyWise. Todos los derechos reservados.</p>
+            <p>© {new Date().getFullYear()} SaveUp. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

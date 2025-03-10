@@ -26,10 +26,10 @@ const Dashboard = () => {
 
   // Mock transaction data
   const recentTransactions = [
-    { id: 1, name: "Grocery Store", amount: -85.23, date: "Today", category: "Food" },
-    { id: 2, name: "Salary", amount: 2000, date: "Yesterday", category: "Income" },
-    { id: 3, name: "Electric Bill", amount: -124.78, date: "Feb 20, 2023", category: "Utilities" },
-    { id: 4, name: "Online Course", amount: -49.99, date: "Feb 18, 2023", category: "Education" },
+    { id: 1, name: "Supermercado", amount: -85.23, date: "Hoy", category: "Alimentación" },
+    { id: 2, name: "Salario", amount: 2000, date: "Ayer", category: "Ingresos" },
+    { id: 3, name: "Factura eléctrica", amount: -124.78, date: "20 Feb, 2023", category: "Servicios" },
+    { id: 4, name: "Curso online", amount: -49.99, date: "18 Feb, 2023", category: "Educación" },
   ];
 
   return (
@@ -37,64 +37,64 @@ const Dashboard = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back! Here's your financial overview.</p>
+            <h1 className="text-3xl font-bold tracking-tight">Panel</h1>
+            <p className="text-muted-foreground">¡Bienvenido de nuevo! Aquí está tu resumen financiero.</p>
           </div>
           <Button className="bg-moneywise-600 hover:bg-moneywise-700">
             <DollarSign className="mr-2 h-4 w-4" />
-            Add Transaction
+            Añadir Transacción
           </Button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card className="hover-scale">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
+              <CardTitle className="text-sm font-medium">Saldo Total</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">${savings.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                +${(savings * 0.05).toFixed(2)} from last {timeframe}
+                +${(savings * 0.05).toFixed(2)} desde el último {timeframe === "month" ? "mes" : "año"}
               </p>
             </CardContent>
           </Card>
           
           <Card className="hover-scale">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Income</CardTitle>
+              <CardTitle className="text-sm font-medium">Ingresos</CardTitle>
               <ArrowUpRight className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">${income.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                +5.2% from last {timeframe}
+                +5.2% desde el último {timeframe === "month" ? "mes" : "año"}
               </p>
             </CardContent>
           </Card>
           
           <Card className="hover-scale">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Expenses</CardTitle>
+              <CardTitle className="text-sm font-medium">Gastos</CardTitle>
               <ArrowDownRight className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">${expenses.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                -2.1% from last {timeframe}
+                -2.1% desde el último {timeframe === "month" ? "mes" : "año"}
               </p>
             </CardContent>
           </Card>
           
           <Card className="hover-scale">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Savings Rate</CardTitle>
+              <CardTitle className="text-sm font-medium">Tasa de Ahorro</CardTitle>
               <TrendingUp className="h-4 w-4 text-moneywise-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{((income - expenses) / income * 100).toFixed(1)}%</div>
               <p className="text-xs text-muted-foreground">
-                +1.5% from last {timeframe}
+                +1.5% desde el último {timeframe === "month" ? "mes" : "año"}
               </p>
             </CardContent>
           </Card>
@@ -103,8 +103,8 @@ const Dashboard = () => {
         <div className="grid gap-6 md:grid-cols-7">
           <Card className="md:col-span-4 hover-scale">
             <CardHeader>
-              <CardTitle>Recent Transactions</CardTitle>
-              <CardDescription>Your recent financial activity</CardDescription>
+              <CardTitle>Transacciones Recientes</CardTitle>
+              <CardDescription>Tu actividad financiera reciente</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -139,7 +139,7 @@ const Dashboard = () => {
               <div className="mt-6">
                 <Button variant="outline" className="w-full" asChild>
                   <Link to="/savings">
-                    View All Transactions
+                    Ver Todas las Transacciones
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
@@ -149,49 +149,49 @@ const Dashboard = () => {
           
           <Card className="md:col-span-3 hover-scale">
             <CardHeader>
-              <CardTitle>Savings Goal Progress</CardTitle>
-              <CardDescription>Track your journey to financial freedom</CardDescription>
+              <CardTitle>Progreso de Metas de Ahorro</CardTitle>
+              <CardDescription>Sigue tu camino hacia la libertad financiera</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">Emergency Fund</p>
+                    <p className="text-sm font-medium">Fondo de Emergencia</p>
                   </div>
                   <div className="text-sm font-medium">${savings} / ${savingsGoal}</div>
                 </div>
                 <Progress value={savingsPercentage} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">{savingsPercentage}% complete</p>
+                <p className="text-xs text-right text-muted-foreground">{savingsPercentage}% completado</p>
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">New Car</p>
+                    <p className="text-sm font-medium">Coche Nuevo</p>
                   </div>
                   <div className="text-sm font-medium">$1,500 / $25,000</div>
                 </div>
                 <Progress value={6} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">6% complete</p>
+                <p className="text-xs text-right text-muted-foreground">6% completado</p>
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">Vacation</p>
+                    <p className="text-sm font-medium">Vacaciones</p>
                   </div>
                   <div className="text-sm font-medium">$800 / $3,000</div>
                 </div>
                 <Progress value={27} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">27% complete</p>
+                <p className="text-xs text-right text-muted-foreground">27% completado</p>
               </div>
               
               <Button variant="outline" className="w-full" asChild>
                 <Link to="/goals">
-                  View All Goals
+                  Ver Todas las Metas
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
