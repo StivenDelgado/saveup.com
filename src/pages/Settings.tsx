@@ -8,11 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import AppLayout from "@/components/Layout/AppLayout";
 import { Laptop, Moon, Sun, Globe, BellRing } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 const Settings = () => {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState({
-    theme: "system",
     language: "es",
     notifications: {
       email: true,
@@ -26,7 +27,7 @@ const Settings = () => {
   });
 
   const handleThemeChange = (value: string) => {
-    setSettings(prev => ({ ...prev, theme: value }));
+    setTheme(value as 'light' | 'dark' | 'system');
     toast({
       title: "Tema actualizado",
       description: `Has cambiado el tema a ${value === "dark" ? "oscuro" : value === "light" ? "claro" : "sistema"}`,
@@ -92,7 +93,7 @@ const Settings = () => {
                   <div className="mt-2 flex flex-wrap gap-2">
                     <Button 
                       variant="outline" 
-                      className={`flex-1 ${settings.theme === "light" ? "bg-moneywise-500 text-white hover:bg-moneywise-600" : ""}`}
+                      className={`flex-1 ${theme === "light" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                       onClick={() => handleThemeChange("light")}
                     >
                       <Sun className="mr-2 h-4 w-4" />
@@ -100,7 +101,7 @@ const Settings = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className={`flex-1 ${settings.theme === "dark" ? "bg-moneywise-500 text-white hover:bg-moneywise-600" : ""}`}
+                      className={`flex-1 ${theme === "dark" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                       onClick={() => handleThemeChange("dark")}
                     >
                       <Moon className="mr-2 h-4 w-4" />
@@ -108,7 +109,7 @@ const Settings = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className={`flex-1 ${settings.theme === "system" ? "bg-moneywise-500 text-white hover:bg-moneywise-600" : ""}`}
+                      className={`flex-1 ${theme === "system" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                       onClick={() => handleThemeChange("system")}
                     >
                       <Laptop className="mr-2 h-4 w-4" />
