@@ -19,7 +19,7 @@ const AuthLayout = ({ children, title, subtitle, backLink }: AuthLayoutProps) =>
         <div className="mb-8 text-center">
           <Link to="/" className="inline-block">
             <h1 className="text-3xl font-bold text-moneywise-600">
-              MoneyWise
+              SaveUp
             </h1>
           </Link>
         </div>
