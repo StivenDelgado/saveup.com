@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/Layout/AuthLayout";
 import { toast } from "sonner";
+import { AuthService } from '@/api/services/authService';
 
 const Register = () => {
   const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,13 +33,21 @@ const Register = () => {
     }
     
     setLoading(true);
-    
-    // Simulate registration
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await AuthService.register({
+        name,
+        lastname,
+        email,
+        password
+      });
+      
       toast.success("¡Registro exitoso!");
-      navigate("/dashboard");
-    }, 1500);
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error al registrar usuario");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,13 +58,25 @@ const Register = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Nombre completo</Label>
+          <Label htmlFor="name">Nombres</Label>
           <Input
             id="name"
             type="text"
             placeholder="Juan Pérez"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
+            className="h-11"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="name">Apellidos</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Juan Pérez"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
             required
             className="h-11"
           />
