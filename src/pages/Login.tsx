@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/Layout/AuthLayout";
-import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { AuthService } from "@/api/services/authService";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,10 @@ const Login = () => {
     
     try {
       await login(email, password);
-      navigate("/dashboard");
+      const responde = await AuthService.login({email, password});
+      if (responde) {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error(error);
     } finally {
