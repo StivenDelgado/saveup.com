@@ -9,6 +9,7 @@ import AuthLayout from "@/components/Layout/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthService } from "@/api/services/authService";
 import { toast } from "sonner";
+// import Cookies from "js-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +48,7 @@ const Login = () => {
 
   return (
     <AuthLayout 
-      title="Bienvenido de nuevo" 
+      title="Bienvenido de nuevo j" 
       subtitle="Ingresa tus credenciales para acceder a tu cuenta"
       backLink={{ label: "¿No tienes una cuenta? Regístrate", to: "/register" }}
     >
