@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthLayout from "@/components/Layout/AuthLayout";
 import { toast } from "sonner";
+import { AuthService } from "@/api/services/authService";
 
 const RecoverPassword = () => {
   const [email, setEmail] = useState("");
@@ -17,12 +18,15 @@ const RecoverPassword = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate sending recovery email
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await AuthService.recoverPassword(email);
       setSent(true);
       toast.success("¡Correo de recuperación enviado!");
-    }, 1500);
+    } catch (error) {
+      
+    }finally {
+      setLoading(false);
+    }
   };
 
   return (

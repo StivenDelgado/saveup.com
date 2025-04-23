@@ -22,8 +22,4 @@ export class HttpService {
     return response.data;
   }
 
-  static async patch<T>(url: string, data?: any): Promise<T> {
-    const response: AxiosResponse<T> = await apiClient.patch(url, data);
-    return response.data;
-  }
 }

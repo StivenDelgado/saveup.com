@@ -8,28 +8,38 @@ import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/Layout/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthService } from "@/api/services/authService";
-import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(JSON.parse(localStorage.getItem("rememberMe"))?.password || "");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(JSON.parse(localStorage.getItem("rememberMe"))?.rememberMe || false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast.error("Por favor complete todos los campos");
+      return;
+    }
+
     setLoading(true);
     
     try {
-      await login(email, password);
-      const responde = await AuthService.login({email, password});
-      if (responde) {
-        navigate("/dashboard");
+      const response = await AuthService.login({ email, password });
+      console.log(response);
+      
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", JSON.stringify({ email, password, rememberMe }));
       }
-    } catch (error) {
-      console.error(error);
+      
+      await login(email, password); // Context update
+      navigate("/dashboard", { replace: true });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }
@@ -41,6 +51,7 @@ const Login = () => {
       subtitle="Ingresa tus credenciales para acceder a tu cuenta"
       backLink={{ label: "¿No tienes una cuenta? Regístrate", to: "/register" }}
     >
+      {email}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Correo electrónico</Label>

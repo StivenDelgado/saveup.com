@@ -14,14 +14,10 @@ interface RegisterData {
 }
 
 interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-  };
+  accessToken?: string;
+  refreshToken?: string;
   success: boolean;
+  message?: string;
 }
 
 export class AuthService {
@@ -53,5 +49,13 @@ export class AuthService {
     const response = await HttpService.post<AuthResponse>('/user/generate-token', { refreshToken });
     setTokens(response.accessToken, response.refreshToken);
     return response;
+  }
+
+  static async recoverPassword(email: string): Promise<void> {
+    await HttpService.post('/user/recover-password', { email });
+  }
+
+  static async changePassword(id_user: number,newPassword: string): Promise<AuthResponse> {
+    return await HttpService.post<AuthResponse>(`/user/change-password`, { id_user, newPassword });
   }
 }
