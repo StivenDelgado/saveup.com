@@ -26,9 +26,11 @@ interface AuthResponse {
 
 export class AuthService {
   static async login(credentials: LoginCredentials): Promise<boolean> {
+
     const response = await HttpService.post<AuthResponse>('/user/login', credentials);
     setTokens(response.accessToken, response.refreshToken);
     return response.success;
+    
   }
 
   static async register(data: RegisterData): Promise<AuthResponse> {

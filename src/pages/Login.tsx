@@ -8,13 +8,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/Layout/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthService } from "@/api/services/authService";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -37,10 +38,11 @@ const Login = () => {
 
   return (
     <AuthLayout 
-      title="Bienvenido de nuevo" 
+      title="Bienvenido de nuevo j" 
       subtitle="Ingresa tus credenciales para acceder a tu cuenta"
       backLink={{ label: "¿No tienes una cuenta? Regístrate", to: "/register" }}
     >
+      {email}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Correo electrónico</Label>
