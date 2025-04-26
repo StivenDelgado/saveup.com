@@ -48,7 +48,7 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
     { name: "Metas de Ahorro", href: "/savings-goals", icon: Target },
     { name: "Asesor IA", href: "/chatbot", icon: MessageSquare },
     { name: "Analítica", href: "/analytics", icon: BarChart3 },
-    { name: "Perfil", href: "/profile", icon: User },
+    // { name: "Perfil", href: "/profile", icon: User },
     { name: "Configuración", href: "/settings", icon: Settings },
   ];
 
@@ -71,7 +71,7 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
       
       <div className={sidebarContentClasses}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/50">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/dashboard" className="flex items-center gap-2">
             <span className="text-xl font-semibold text-moneywise-600">SaveUp</span>
           </Link>
           

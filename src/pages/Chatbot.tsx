@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/components/Layout/AppLayout";
 import { toast } from "sonner";
+import { iaService } from "@/api/services/iaService";
 
 interface Message {
   id: string;
-  content: string;
+  prompt: string;
   sender: "user" | "bot";
   timestamp: Date;
 }
@@ -18,7 +19,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "¡Hola! Soy tu asesor financiero con IA. ¿En qué puedo ayudarte hoy?",
+      prompt: "¡Hola! Soy tu asesor financiero con IA. ¿En qué puedo ayudarte hoy?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -35,40 +36,33 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
 
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: input,
+      prompt: input,
       sender: "user",
       timestamp: new Date(),
     };
+
+    const res = await iaService.promptIA({prompt: input});
+    console.log(res)
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
 
     // Simulate AI response
-    setTimeout(() => {
-      const botResponses = [
-        "Basado en tus hábitos de gasto, recomiendo ahorrar un 5% adicional de tus ingresos cada mes.",
-        "Viendo tus metas financieras, estás en camino de alcanzar tu fondo de emergencia para el próximo trimestre.",
-        "He analizado tu presupuesto y descubrí que podrías reducir tus servicios de suscripción para ahorrar unos $50 mensuales.",
-        "¡Tu tasa de ahorro es impresionante! Estás ahorrando más que el 70% de las personas en tu grupo de edad.",
-        "¿Has considerado configurar transferencias automáticas a tu cuenta de ahorros? Es una excelente manera de acumular riqueza de forma constante.",
-      ];
-      
       const botMessage: Message = {
         id: Date.now().toString(),
-        content: botResponses[Math.floor(Math.random() * botResponses.length)],
+        prompt: res.response,
         sender: "bot",
         timestamp: new Date(),
       };
       
       setMessages((prev) => [...prev, botMessage]);
       setIsTyping(false);
-    }, 1500);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -125,7 +119,7 @@ const Chatbot = () => {
                         <Bot className="mt-1 h-5 w-5 text-moneywise-600" />
                       )}
                       <div>
-                        <p className="text-sm">{message.content}</p>
+                        <p className="text-sm">{message.prompt}</p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           {message.timestamp.toLocaleTimeString([], {
                             hour: "2-digit",
@@ -199,7 +193,7 @@ const Chatbot = () => {
                     onClick={handleSendMessage}
                     disabled={!input.trim() || isTyping}
                   >
-                    <ArrowUp className="h-4 w-4" />
+                    <ArrowUp className="h-5 w-5" />
                     <span className="sr-only">Enviar</span>
                   </Button>
                 </div>
