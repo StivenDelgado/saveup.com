@@ -48,11 +48,10 @@ const Login = () => {
 
   return (
     <AuthLayout 
-      title="Bienvenido de nuevo j" 
+      title="Bienvenido de nuevo" 
       subtitle="Ingresa tus credenciales para acceder a tu cuenta"
       backLink={{ label: "¿No tienes una cuenta? Regístrate", to: "/register" }}
     >
-      {email}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Correo electrónico</Label>

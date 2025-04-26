@@ -117,29 +117,6 @@ const Settings = () => {
                     </Button>
                   </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="language" className="text-base">Idioma</Label>
-                  <Select defaultValue={settings.language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger id="language" className="w-full">
-                      <SelectValue placeholder="Selecciona un idioma" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="es">
-                        <div className="flex items-center">
-                          <Globe className="mr-2 h-4 w-4" />
-                          Español
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="en">
-                        <div className="flex items-center">
-                          <Globe className="mr-2 h-4 w-4" />
-                          English
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
             </CardContent>
           </Card>

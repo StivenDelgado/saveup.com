@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, ArrowUpRight, Target, Trash2, Edit, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,42 +23,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { goalService } from "@/api/services/goalService";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 // Mock data
-const mockGoals = [
-  {
-    id: 1,
-    name: "Emergency Fund",
-    target: 10000,
-    current: 2750,
-    deadline: "2023-12-31",
-    color: "blue"
-  },
-  {
-    id: 2,
-    name: "New Car",
-    target: 25000,
-    current: 1500,
-    deadline: "2024-06-30",
-    color: "green"
-  },
-  {
-    id: 3,
-    name: "Vacation",
-    target: 3000,
-    current: 800,
-    deadline: "2023-08-15",
-    color: "purple"
-  },
-  {
-    id: 4,
-    name: "Home Down Payment",
-    target: 50000,
-    current: 12500,
-    deadline: "2025-01-01",
-    color: "orange"
-  },
-];
+// const mockGoals = [
+//   {
+//     id_goal: 1,
+//     goal_name: "carro",
+//     current_amount: 10000,
+//     target_amount: 25000,
+//     deadline: "2024-06-30",
+//   },
+//   {
+//     id_goal: 2,
+//     goal_name: "casa",
+//     current_amount: 10000,
+//     target_amount: 25000,
+//     deadline: "2024-06-30",
+//   }
+// ];
+
 
 const colorOptions = [
   { name: "Blue", value: "blue", class: "bg-moneywise-500" },
@@ -69,11 +54,37 @@ const colorOptions = [
 ];
 
 const SavingsGoals = () => {
-  const [goals, setGoals] = useState(mockGoals);
+  const [goals, setGoals] = useState([]);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState<null | typeof mockGoals[0]>(null);
+  const [selectedGoal, setSelectedGoal] = useState({});
   const [depositAmount, setDepositAmount] = useState("");
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const tokenCoded = Cookies.get("accessToken");
+  const accessToken = jwtDecode(tokenCoded) as { id: number , email: string};
+
+  const fetchGoals = async () => {
+    try {
+      const metas = await goalService.getGoals(accessToken.id);
+      setGoals(
+        metas.goals.map((goal: any, index: number) => ({
+          id: goal.id_goal,
+          goal_name: goal.goal_name,
+          current: parseFloat(goal.current_amount),
+          target: parseFloat(goal.target_amount),
+          deadline: goal.deadline,
+          color: colorOptions[index % colorOptions.length].value
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGoals();
+  }, []);
   
   // New goal state
   const [newGoal, setNewGoal] = useState({
@@ -84,79 +95,90 @@ const SavingsGoals = () => {
     color: "blue"
   });
   
-  const handleAddGoal = () => {
+  const handleAddGoal = async () => {
     const target = parseFloat(newGoal.target);
     const current = parseFloat(newGoal.current);
     
     if (!newGoal.name || isNaN(target) || target <= 0 || !newGoal.deadline) {
-      toast.error("Please fill all required fields");
+      toast.error("Porfavor rellena todos los campos");
       return;
     }
     
     if (isNaN(current) || current < 0) {
-      toast.error("Current amount must be a valid number");
+      toast.error("Porfavor ingresa un monto válido");
       return;
     }
     
     if (current > target) {
-      toast.error("Current amount cannot be greater than target");
+      toast.error("El monto inicial no puede ser mayor al monto meta");
       return;
     }
     
     const newEntry = {
-      id: goals.length + 1,
-      name: newGoal.name,
-      target: target,
-      current: current,
+      id_user: accessToken.id,
+      goal_name: newGoal.name,
+      target_amount: target,
+      current_amount: current,
       deadline: newGoal.deadline,
-      color: newGoal.color
     };
-    
-    setGoals([...goals, newEntry]);
+    console.log(newEntry)
+    const res = await goalService.addGoal(newEntry);
+    // fetchGoals();
+
     setAddDialogOpen(false);
-    toast.success("Savings goal created successfully");
+    console.log(res)
+    toast.success("Meta creada exitosamente");
+    fetchGoals();
     
     // Reset form
     setNewGoal({
       name: "",
       target: "",
-      current: "0",
+      current: "",
       deadline: "",
       color: "blue"
     });
   };
   
-  const handleDeposit = () => {
-    if (!selectedGoal) return;
-    
+  const handleDeposit = async () => {
+    if (!selectedGoal?.id || !depositAmount) return;
+  
     const amount = parseFloat(depositAmount);
-    
+  
     if (isNaN(amount) || amount <= 0) {
-      toast.error("Please enter a valid amount");
+      toast.error("Porfavor ingresa un monto válido");
       return;
     }
-    
-    const updatedGoals = goals.map(goal => {
-      if (goal.id === selectedGoal.id) {
-        const newAmount = goal.current + amount;
-        if (newAmount > goal.target) {
-          toast.error("Deposit would exceed the goal target");
-          return goal;
-        }
-        return { ...goal, current: newAmount };
+  
+    try {
+      const res = await goalService.updateAmount({
+        id_goal: selectedGoal.id,
+        new_amount: amount
+      });
+  
+      if (res.success) {
+        toast.success("Fondos agregados exitosamente");
+        fetchGoals();
+      } else {
+        toast.error("Error al agregar fondos");
       }
-      return goal;
-    });
-    
-    setGoals(updatedGoals);
-    setDepositDialogOpen(false);
-    setDepositAmount("");
-    toast.success(`$${amount.toFixed(2)} added to ${selectedGoal.name}`);
+  
+      setDepositDialogOpen(false);
+      setDepositAmount("");
+    } catch (error) {
+      console.error(error);
+      toast.error("Hubo un error al procesar la solicitud");
+    }
   };
   
-  const handleDeleteGoal = (id: number) => {
-    setGoals(goals.filter(goal => goal.id !== id));
-    toast.success("Goal deleted successfully");
+  const handleDeleteGoal = async (id: number) => {
+    const res = await goalService.deleteGoal(id);
+    if (!res.success) {
+      toast.error("Error al borrar la meta");
+      return;
+    }
+    toast.success("Meta eliminada exitosamente");
+    fetchGoals();
   };
   
   return (
@@ -164,27 +186,27 @@ const SavingsGoals = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Savings Goals</h1>
-            <p className="text-muted-foreground">Track your progress towards financial freedom</p>
+            <h1 className="text-3xl font-bold tracking-tight">Metas de ahorro</h1>
+            <p className="text-muted-foreground">Rastrea tu progreso hacia la libertad financiera</p>
           </div>
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-moneywise-600 hover:bg-moneywise-700">
                 <Plus className="mr-2 h-4 w-4" />
-                New Goal
+                Nueva meta
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Create Savings Goal</DialogTitle>
+                <DialogTitle>Crear meta de ahorro</DialogTitle>
                 <DialogDescription>
-                  Set a new financial goal to work towards
+                  Establece un nuevo objetivo financiero para perseguir
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="goal-name" className="text-right">
-                    Goal Name
+                    Nombre de la meta
                   </Label>
                   <Input
                     id="goal-name"
@@ -195,7 +217,7 @@ const SavingsGoals = () => {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="target-amount" className="text-right">
-                    Target Amount
+                    Monto objetivo
                   </Label>
                   <Input
                     id="target-amount"
@@ -207,7 +229,7 @@ const SavingsGoals = () => {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="current-amount" className="text-right">
-                    Starting Amount
+                    Monto inicial
                   </Label>
                   <Input
                     id="current-amount"
@@ -219,7 +241,7 @@ const SavingsGoals = () => {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="deadline" className="text-right">
-                    Target Date
+                    Fecha objetivo
                   </Label>
                   <Input
                     id="deadline"
@@ -230,8 +252,9 @@ const SavingsGoals = () => {
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Color</Label>
-                  <div className="col-span-3 flex gap-2">
+                  {/* OPCION PARA MAS A FUTURO PONER COLOR A LOS AHORROS */}
+                  {/* <Label className="text-right">Color</Label> */}
+                  {/* <div className="col-span-3 flex gap-2">
                     {colorOptions.map((color) => (
                       <button
                         key={color.value}
@@ -240,18 +263,18 @@ const SavingsGoals = () => {
                           newGoal.color === color.value ? 'ring-2 ring-offset-2 ring-black' : ''
                         }`}
                         onClick={() => setNewGoal({...newGoal, color: color.value})}
-                        aria-label={`Select ${color.name}`}
+                        aria-label={`Seleccionar ${color.name}`}
                       />
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
-                  Cancel
+                  Cancelar
                 </Button>
                 <Button onClick={handleAddGoal} className="bg-moneywise-600 hover:bg-moneywise-700">
-                  Create Goal
+                  Crear meta
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -260,14 +283,14 @@ const SavingsGoals = () => {
           <Dialog open={depositDialogOpen} onOpenChange={setDepositDialogOpen}>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Add to {selectedGoal?.name}</DialogTitle>
+                <DialogTitle>Agregar fondos</DialogTitle>
                 <DialogDescription>
-                  Add money to your savings goal
+                  Agrega dinero a tu meta de ahorro
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="deposit-amount">Amount</Label>
+                  <Label htmlFor="deposit-amount">Cantidad</Label>
                   <Input
                     id="deposit-amount"
                     type="number"
@@ -326,13 +349,13 @@ const SavingsGoals = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       <div className={`w-3 h-3 rounded-full ${colorClass}`} />
-                      <CardTitle className="text-lg">{goal.name}</CardTitle>
+                      <CardTitle className="text-lg">{goal.goal_name}</CardTitle>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
+                          <span className="sr-only">Acciones</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -343,37 +366,33 @@ const SavingsGoals = () => {
                           }}
                         >
                           <ArrowUpRight className="mr-2 h-4 w-4" />
-                          Add Funds
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit Goal
+                          Agregar fondos
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-600"
                           onClick={() => handleDeleteGoal(goal.id)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Goal
+                          Eliminar meta
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                   <CardDescription>
-                    Target Date: {new Date(goal.deadline).toLocaleDateString()}
+                    Fecha objetivo: {new Date(goal.deadline).toLocaleDateString()}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className={`p-4 rounded-lg ${colorLightClass}`}>
                     <div className="flex items-end justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Current</p>
+                        <p className="text-sm text-muted-foreground">Actual</p>
                         <p className={`text-2xl font-bold ${colorTextClass}`}>
                           ${goal.current.toLocaleString()}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Target</p>
+                        <p className="text-sm text-muted-foreground">Meta</p>
                         <p className="text-xl font-medium">
                           ${goal.target.toLocaleString()}
                         </p>
@@ -383,7 +402,7 @@ const SavingsGoals = () => {
                   
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
-                      <span className={colorTextClass}>Progress</span>
+                      <span className={colorTextClass}>Progreso</span>
                       <span className="font-medium">{progress}%</span>
                     </div>
                     <Progress value={progress} className="h-2" />
@@ -391,7 +410,7 @@ const SavingsGoals = () => {
                   
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">
-                      ${(goal.target - goal.current).toLocaleString()} left to reach your goal
+                      ${(goal.target - goal.current).toLocaleString()} Faltante(s) para lograr tu meta
                     </p>
                   </div>
                 </CardContent>
@@ -405,7 +424,7 @@ const SavingsGoals = () => {
                     }}
                   >
                     <ArrowUpRight className="mr-2 h-4 w-4" />
-                    Add Funds
+                    Agregar fondos
                   </Button>
                 </CardFooter>
               </Card>
