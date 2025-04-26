@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   ArrowUpRight, 
@@ -14,15 +14,25 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/Layout/AppLayout";
+import { goalService } from "@/api/services/goalService";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { savingService } from "@/api/services/savingService";
+
 
 const Dashboard = () => {
   const [savings, setSavings] = useState(2750);
   const [expenses, setExpenses] = useState(1250);
   const [income, setIncome] = useState(4000);
   const [timeframe, setTimeframe] = useState("month");
-
+  const [goals, setGoals] = useState([]);
+  const [myTransactions, setMyTransactions] = useState([]);
+  
   const savingsGoal = 10000;
   const savingsPercentage = Math.floor((savings / savingsGoal) * 100);
+
+  const tokenCoded = Cookies.get("accessToken");
+  const accessToken = jwtDecode(tokenCoded) as { id: number , email: string};
 
   // Mock transaction data
   const recentTransactions = [
@@ -32,6 +42,48 @@ const Dashboard = () => {
     { id: 4, name: "Curso online", amount: -49.99, date: "18 Feb, 2023", category: "Educación" },
   ];
 
+  const colorOptions = [
+    { name: "Blue", value: "blue", class: "bg-moneywise-500" },
+    { name: "Green", value: "green", class: "bg-green-500" },
+    { name: "Purple", value: "purple", class: "bg-purple-500" },
+    { name: "Orange", value: "orange", class: "bg-orange-500" },
+    { name: "Pink", value: "pink", class: "bg-pink-500" },
+  ];
+  const fetchGoals = async () => {
+      try {
+        const metas = await goalService.getGoals(accessToken.id);
+        setGoals(
+          metas.goals.map((goal: any, index: number) => ({
+            id: goal.id_goal,
+            goal_name: goal.goal_name,
+            current: parseFloat(goal.current_amount),
+            target: parseFloat(goal.target_amount),
+            deadline: goal.deadline,
+            color: colorOptions[index % colorOptions.length].value
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const transactions = await savingService.getTransactions(accessToken.id)
+      setMyTransactions([
+        ...transactions.finance.expenses,
+        ...transactions.finance.incomes
+      ]);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchGoals();
+    fetchTransactions();
+  }, []);
+
   return (
     <AppLayout>
       <div className="flex flex-col gap-6">
@@ -40,64 +92,6 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold tracking-tight">Panel</h1>
             <p className="text-muted-foreground">¡Bienvenido de nuevo! Aquí está tu resumen financiero.</p>
           </div>
-          <Button className="bg-moneywise-600 hover:bg-moneywise-700">
-            <DollarSign className="mr-2 h-4 w-4" />
-            Añadir Transacción
-          </Button>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover-scale">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Saldo Total</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${savings.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                +${(savings * 0.05).toFixed(2)} desde el último {timeframe === "month" ? "mes" : "año"}
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover-scale">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Ingresos</CardTitle>
-              <ArrowUpRight className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${income.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                +5.2% desde el último {timeframe === "month" ? "mes" : "año"}
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover-scale">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Gastos</CardTitle>
-              <ArrowDownRight className="h-4 w-4 text-red-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${expenses.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                -2.1% desde el último {timeframe === "month" ? "mes" : "año"}
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover-scale">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Tasa de Ahorro</CardTitle>
-              <TrendingUp className="h-4 w-4 text-moneywise-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{((income - expenses) / income * 100).toFixed(1)}%</div>
-              <p className="text-xs text-muted-foreground">
-                +1.5% desde el último {timeframe === "month" ? "mes" : "año"}
-              </p>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-7">
@@ -108,37 +102,37 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentTransactions.map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between">
+                {myTransactions.map((transaction) => (
+                  <div key={transaction.id_expense || transaction.id_income} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        transaction.amount > 0 ? "bg-green-100" : "bg-red-100"
+                        !transaction.isExpense ? "bg-green-100" : "bg-red-100"
                       }`}>
-                        {transaction.amount > 0 ? (
-                          <ArrowUpRight className={`h-5 w-5 text-green-600`} />
+                        {transaction.isExpense ? (
+                          <ArrowUpRight className={`h-5 w-5 text-red-600`} />
                         ) : (
-                          <ArrowDownRight className={`h-5 w-5 text-red-600`} />
+                          <ArrowDownRight className={`h-5 w-5 text-green-600`} />
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{transaction.name}</p>
+                        <p className="text-sm font-medium">{transaction.income_name || transaction.expense_name}</p>
                         <p className="text-xs text-muted-foreground">{transaction.date}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className={`text-sm font-medium ${
-                        transaction.amount > 0 ? "text-green-600" : "text-red-600"
+                        transaction.isExpense ?  "text-red-600" : "text-green-600"
                       }`}>
-                        {transaction.amount > 0 ? "+" : ""}{transaction.amount.toFixed(2)}
+                        {transaction.isExpense ? "-" : "+"}{transaction.amount}
                       </p>
-                      <p className="text-xs text-muted-foreground">{transaction.category}</p>
+                      <p className="text-xs text-muted-foreground">{transaction.icon}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="mt-6">
                 <Button variant="outline" className="w-full" asChild>
-                  <Link to="/savings">
+                  <Link to="/smart-savings">
                     Ver Todas las Transacciones
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Link>
@@ -153,54 +147,64 @@ const Dashboard = () => {
               <CardDescription>Sigue tu camino hacia la libertad financiera</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">Fondo de Emergencia</p>
+
+              {goals.map((goal) => (
+                <div key={goal.id} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Target className="h-4 w-4 text-moneywise-600" />
+                      <p className="text-sm font-medium">{goal.goal_name}</p>
+                    </div>
+                    <div className="text-sm font-medium">${goal.current} / ${goal.target}</div>
                   </div>
-                  <div className="text-sm font-medium">${savings} / ${savingsGoal}</div>
+                  <Progress value={(goal.current / goal.target) * 100} className="h-2" />
+                  <p className="text-xs text-right text-muted-foreground">{((goal.current / goal.target) * 100).toFixed(1)}% completado</p>
                 </div>
-                <Progress value={savingsPercentage} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">{savingsPercentage}% completado</p>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">Coche Nuevo</p>
-                  </div>
-                  <div className="text-sm font-medium">$1,500 / $25,000</div>
-                </div>
-                <Progress value={6} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">6% completado</p>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-moneywise-600" />
-                    <p className="text-sm font-medium">Vacaciones</p>
-                  </div>
-                  <div className="text-sm font-medium">$800 / $3,000</div>
-                </div>
-                <Progress value={27} className="h-2" />
-                <p className="text-xs text-right text-muted-foreground">27% completado</p>
-              </div>
-              
+              ))}
               <Button variant="outline" className="w-full" asChild>
-                <Link to="/goals">
+                <Link to="/savings-goals">
                   Ver Todas las Metas
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </CardContent>
           </Card>
+          <Card className="md:col-span-3 hover-scale">
+            <CardHeader>
+              <CardTitle>Asesor IA</CardTitle>
+              <CardDescription>¿No sabes que hacer para tener alternativas mas eficacez para tus metas de ahorro? Echa un vistazo a nuestro asesor impulsado por inteligencia articial para que puedas tener una idea de donde partir 😊.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/chatbot">
+                  Echar un vistazo
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card className="md:col-span-3 hover-scale">
+            <CardHeader>
+              <CardTitle>Analíticas</CardTitle>
+              <CardDescription>Ponte juicio que poximamente llega Analítica, una sección en donde analizaremos tu gasto mes a mes para darte un plan de ahorro personalizado.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/analytics">
+                  Echar un vistazo
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </div>  
     </AppLayout>
   );
 };
 
 export default Dashboard;
+function jwt_decode(token: string) {
+  throw new Error("Function not implemented.");
+}
+

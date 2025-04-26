@@ -43,7 +43,7 @@ const Index = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Registra tus ingresos y gastos para obtener recomendaciones personalizadas de ahorro.
               </p>
-              <Link to="/smart-savings" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
+              <Link to="/login" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
                 Explorar <ArrowRight size={16} className="ml-1" />
               </Link>
             </div>
@@ -57,7 +57,7 @@ const Index = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Establece objetivos financieros y visualiza tu progreso hacia ellos.
               </p>
-              <Link to="/savings-goals" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
+              <Link to="/login" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
                 Explorar <ArrowRight size={16} className="ml-1" />
               </Link>
             </div>
@@ -71,7 +71,7 @@ const Index = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Chatbot inteligente que responde a tus preguntas sobre finanzas personales.
               </p>
-              <Link to="/chatbot" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
+              <Link to="/login" className="inline-flex items-center text-moneywise-500 hover:text-moneywise-600">
                 Explorar <ArrowRight size={16} className="ml-1" />
               </Link>
             </div>

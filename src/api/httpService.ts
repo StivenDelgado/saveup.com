@@ -1,5 +1,5 @@
 import { apiClient } from './config';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export class HttpService {
   static async get<T>(url: string, params?: any): Promise<T> {
@@ -17,13 +17,8 @@ export class HttpService {
     return response.data;
   }
 
-  static async delete<T>(url: string): Promise<T> {
-    const response: AxiosResponse<T> = await apiClient.delete(url);
-    return response.data;
-  }
-
-  static async patch<T>(url: string, data?: any): Promise<T> {
-    const response: AxiosResponse<T> = await apiClient.patch(url, data);
+  static async delete<T>(url: string, data?: any): Promise<T> {
+    const response: AxiosResponse<T> = await apiClient.delete(url, data);
     return response.data;
   }
 }

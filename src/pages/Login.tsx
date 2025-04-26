@@ -6,26 +6,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/Layout/AuthLayout";
-import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { AuthService } from "@/api/services/authService";
+import { toast } from "sonner";
+// import Cookies from "js-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(JSON.parse(localStorage.getItem("rememberMe"))?.password || "");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(JSON.parse(localStorage.getItem("rememberMe"))?.rememberMe || false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast.error("Por favor complete todos los campos");
+      return;
+    }
+
     setLoading(true);
     
     try {
-      await login(email, password);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error(error);
+      const response = await AuthService.login({ email, password });
+      console.log(response);
+      
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", JSON.stringify({ email, password, rememberMe }));
+      }
+      
+      await login(email, password); // Context update
+      navigate("/dashboard", { replace: true });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }

@@ -1,18 +1,25 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthLayout from "@/components/Layout/AuthLayout";
 import { toast } from "sonner";
+import { AuthService } from "@/api/services/authService";
 
 const ChangePassword = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const hasChanged = sessionStorage.getItem('passwordChanged');
+    if (hasChanged) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,15 +28,25 @@ const ChangePassword = () => {
       toast.error("Las nuevas contraseñas no coinciden");
       return;
     }
-    
+
     setLoading(true);
-    
-    // Simulate password change
-    setTimeout(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    try {
+      const id_user = parseInt(urlParams.get('id_user'));
+      if (id_user) {
+        await AuthService.changePassword(id_user, newPassword);
+        toast.success("Contraseña cambiada con éxito");
+        sessionStorage.setItem('passwordChanged', 'true');
+        navigate("/login", { replace: true });
+      } else {
+        navigate("/login", { replace: true });
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error al cambiar la contraseña");
+    } finally {
       setLoading(false);
-      toast.success("Contraseña cambiada con éxito");
-      navigate("/dashboard");
-    }, 1500);
+    }
   };
 
   return (
@@ -39,19 +56,6 @@ const ChangePassword = () => {
       backLink={{ label: "Volver al panel", to: "/dashboard" }}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="current-password">Contraseña actual</Label>
-          <Input
-            id="current-password"
-            type="password"
-            placeholder="••••••••"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-            className="h-11"
-          />
-        </div>
-        
         <div className="space-y-2">
           <Label htmlFor="new-password">Nueva contraseña</Label>
           <Input

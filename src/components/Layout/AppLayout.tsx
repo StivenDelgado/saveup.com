@@ -17,12 +17,8 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Navbar 
-          onMenuClick={() => setSidebarOpen(true)}
-          onNotificationsClick={() => setNotificationsOpen(true)}
-        />
         
-        <main className="flex-1 overflow-y-auto p-6 pb-16">
+        <main className="flex-1 overflow-y-auto p-16 pb-16">
           <div className="max-w-7xl mx-auto animate-fade-in">
             {children}
           </div>
